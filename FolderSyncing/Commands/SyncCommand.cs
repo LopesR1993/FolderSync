@@ -10,7 +10,7 @@ namespace FolderSyncing.Commands
         private readonly ILogger<ISyncCommand> _logger;
         private readonly ISyncService _syncService;
 
-        public SyncCommand(ILogger<ISyncCommand> logger, ISyncService syncService)
+        public SyncCommand(ILogger<SyncCommand> logger, ISyncService syncService)
         {
             _logger = logger;
             _syncService = syncService;
