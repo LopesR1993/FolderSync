@@ -1,13 +1,10 @@
-﻿
-using Microsoft.Extensions.Logging;
-
-namespace FolderSyncing.Services
+﻿namespace FolderSyncing.Services
 {
     public class SyncService : ISyncService
     {
-        private readonly ILogger<ISyncService> _logger;
+        private readonly Serilog.ILogger _logger;
 
-        public SyncService(ILogger<ISyncService> logger)
+        public SyncService(Serilog.ILogger logger)
         {
             _logger = logger;
         }
@@ -16,6 +13,7 @@ namespace FolderSyncing.Services
         {
             try
             {
+
                 var directories = Directory.EnumerateDirectories(sourceFolder);
                 var files = Directory.EnumerateFiles(sourceFolder);
 
@@ -59,7 +57,7 @@ namespace FolderSyncing.Services
             }
             catch (Exception e)
             {
-                _logger.LogError($"Failed to sync folders. Exception: {e.Message}");
+                _logger.Error($"Failed to sync folders. Exception: {e.Message}");
                 return false;
             }
         }
@@ -69,7 +67,7 @@ namespace FolderSyncing.Services
             var destinationDirectory = Path.Combine(destinationFolder, directoryName);
             Directory.CreateDirectory(destinationDirectory);
 
-            _logger.LogInformation($"Created directory {directoryName} in {destinationDirectory}");
+            _logger.Information($"Created directory {directoryName} in {destinationDirectory}");
 
             return Task.CompletedTask;
         }
@@ -81,7 +79,7 @@ namespace FolderSyncing.Services
 
             File.Copy(sourceFilePath, destinationFilePath, true);
 
-            _logger.LogInformation($"Created File {fileName} in {destinationFolder}");
+            _logger.Information($"Created File {fileName} in {destinationFolder}");
 
             return Task.CompletedTask;
         }

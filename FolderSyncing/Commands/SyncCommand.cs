@@ -1,16 +1,16 @@
 ﻿using Cocona;
 using FolderSyncing.Services;
 using FolderSyncing.Validation;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace FolderSyncing.Commands
 {
     public class SyncCommand : ISyncCommand
     {
-        private readonly ILogger<ISyncCommand> _logger;
+        private Serilog.ILogger _logger;
         private readonly ISyncService _syncService;
 
-        public SyncCommand(ILogger<SyncCommand> logger, ISyncService syncService)
+        public SyncCommand(Serilog.ILogger logger, ISyncService syncService)
         {
             _logger = logger;
             _syncService = syncService;
@@ -26,7 +26,7 @@ namespace FolderSyncing.Commands
             try
             {
                 ValidationHelper.ValidateInputs(intervalSeconds, sourceFolder, destinationFolder, logFileLocation);
-                _logger.LogInformation($"Started synchronizing folders and files.\n Source: {sourceFolder}\n Destination: {destinationFolder}");
+                _logger.Information($"Started synchronizing folders and files.\n Source: {sourceFolder}\n Destination: {destinationFolder}");
 
                 var interval = int.Parse(intervalSeconds) * 1000;
                 while (true)
@@ -40,11 +40,11 @@ namespace FolderSyncing.Commands
                 switch (e)
                 {
                     case OperationCanceledException:
-                        _logger.LogInformation("Synchronization was cancelled.");
+                        _logger.Information("Synchronization was cancelled.");
                         break;
 
                     default:
-                        _logger.LogError(e.Message, "An error occured while synchronizing folders");
+                        _logger.Error(e.Message, "An error occured while synchronizing folders");
                         break;
                 }
             }
