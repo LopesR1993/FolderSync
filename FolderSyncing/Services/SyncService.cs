@@ -11,29 +11,47 @@ namespace FolderSyncing.Services
         {
             _logger = logger;
         }
+
         public async Task<bool> SyncFilesAsync(string sourceFolder, string destinationFolder)
         {
             try
             {
-                var directories = Directory.GetDirectories(sourceFolder);
-                var files = Directory.GetFiles(sourceFolder);
+                var directories = Directory.EnumerateDirectories(sourceFolder);
+                var files = Directory.EnumerateFiles(sourceFolder);
+
                 foreach (var directory in directories)
                 {
                     var directoryName = Path.GetFileName(directory);
-                    if (!Directory.Exists(destinationFolder + $"/{directoryName}"))
-                    {
-                        await CreateDirectory(directoryName!, destinationFolder);
 
-                        await SyncFilesAsync($"{sourceFolder}/{directoryName}", $"{destinationFolder}/{directoryName}");
+                    var destinationDirectory = Path.Combine(destinationFolder, directoryName);
+
+                    if (!Directory.Exists(destinationDirectory))
+                    {
+                        await CreateDirectory(directoryName, destinationFolder);
                     }
+
+                    await SyncFilesAsync(Path.Combine(sourceFolder, directoryName), Path.Combine(destinationFolder, directoryName));
                 }
 
                 foreach (var file in files)
                 {
                     var fileName = Path.GetFileName(file);
-                    if (!File.Exists($"{destinationFolder}/{fileName}"))
+
+                    var destinationFilePath = Path.Combine(destinationFolder, fileName);
+
+                    if (!File.Exists(destinationFilePath))
                     {
-                        await CreateFile(new FileInfo(file), $"{destinationFolder}");
+                        await CreateFile(file, destinationFolder);
+                    }
+                    else
+                    {
+                        var currentFileLastWriteTime = File.GetLastWriteTimeUtc(file);
+                        var destinationFileLastWriteTime = File.GetLastWriteTimeUtc(destinationFilePath);
+
+                        if (currentFileLastWriteTime > destinationFileLastWriteTime)
+                        {
+                            await CreateFile(file, destinationFolder);
+                        }
                     }
                 }
 
@@ -48,18 +66,22 @@ namespace FolderSyncing.Services
 
         private Task CreateDirectory(string directoryName, string destinationFolder)
         {
-            Directory.CreateDirectory(destinationFolder + $"/{directoryName}");
+            var destinationDirectory = Path.Combine(destinationFolder, directoryName);
+            Directory.CreateDirectory(destinationDirectory);
 
-            _logger.LogInformation($"Created directory {directoryName} in {destinationFolder}/{directoryName}");
+            _logger.LogInformation($"Created directory {directoryName} in {destinationDirectory}");
 
             return Task.CompletedTask;
         }
 
-        private Task CreateFile(FileInfo file, string destinationFolder)
+        private Task CreateFile(string sourceFilePath, string destinationFolder)
         {
-            file.CopyTo($"{destinationFolder}/{file.Name}");
+            var fileName = Path.GetFileName(sourceFilePath);
+            var destinationFilePath = Path.Combine(destinationFolder, fileName);
 
-            _logger.LogInformation($"Created File {file.Name} in {destinationFolder}");
+            File.Copy(sourceFilePath, destinationFilePath, true);
+
+            _logger.LogInformation($"Created File {fileName} in {destinationFolder}");
 
             return Task.CompletedTask;
         }
