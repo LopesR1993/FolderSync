@@ -22,7 +22,6 @@ namespace FolderSyncing.Commands
             [Option('s', Description = "The path to the folder to be synchronized")] string sourceFolder,
             [Option('d', Description = "The path to the replica folder")] string destinationFolder,
             [Option('l', Description = "The path to the log file.")] string logFileLocation)
-            CancellationToken cancellationToken)
         {
             try
             {
@@ -30,10 +29,10 @@ namespace FolderSyncing.Commands
                 _logger.LogInformation($"Started synchronizing folders and files.\n Source: {sourceFolder}\n Destination: {destinationFolder}");
 
                 var interval = int.Parse(intervalSeconds) * 1000;
-                while (!cancellationToken.IsCancellationRequested)
+                while (true)
                 {
                     var result = await _syncService.SyncFilesAsync(sourceFolder, destinationFolder);
-                    await Task.Delay(interval, cancellationToken);
+                    await Task.Delay(interval);
                 }
             }
             catch (Exception e)
