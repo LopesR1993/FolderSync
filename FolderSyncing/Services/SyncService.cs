@@ -86,12 +86,14 @@
             }
         }
 
-        private async Task CreateDirectory(string directoryName, string destinationFolder)
+        private Task CreateDirectory(string directoryName, string destinationFolder)
         {
             var destinationDirectory = Path.Combine(destinationFolder, directoryName);
             Directory.CreateDirectory(destinationDirectory);
 
             _logger.Information($"Created directory {directoryName} in {destinationDirectory}");
+
+            return Task.CompletedTask;
         }
 
         private async Task CreateFile(string sourceFilePath, string destinationFolder, bool isUpdate)
@@ -116,16 +118,20 @@
                 _logger.Information($"Created File {fileName} in {destinationFolder}");
             }
         }
-        private async Task DeleteDirectory(DirectoryInfo directory)
+        private Task DeleteDirectory(DirectoryInfo directory)
         {
             Directory.Delete(directory.FullName, true);
             _logger.Information($"Deleted directory {directory.Name} from {directory?.Parent?.FullName ?? "disk"}");
+        
+            return Task.CompletedTask;
         }
 
-        private async Task DeleteFile(FileInfo file)
+        private Task DeleteFile(FileInfo file)
         {
             File.Delete(file.FullName);
             _logger.Information($"Deleted file {file.Name} from {file.DirectoryName}");
+        
+            return Task.CompletedTask;
         }
     }
 }

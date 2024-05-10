@@ -15,8 +15,7 @@ namespace FolderSyncing.Validation
 
         private static void ValidateTimeInput(string timeInput)
         {
-            int output = -1;
-            if (!int.TryParse(timeInput, out output) || output < 1)
+            if (!int.TryParse(timeInput, out int output) || output < 1)
             {
                 throw new InvalidTimeException();
             }

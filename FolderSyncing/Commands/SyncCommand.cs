@@ -1,13 +1,12 @@
 ﻿using Cocona;
 using FolderSyncing.Services;
 using FolderSyncing.Validation;
-using Serilog;
 
 namespace FolderSyncing.Commands
 {
     public class SyncCommand : ISyncCommand
     {
-        private Serilog.ILogger _logger;
+        private readonly Serilog.ILogger _logger;
         private readonly ISyncService _syncService;
 
         public SyncCommand(Serilog.ILogger logger, ISyncService syncService)

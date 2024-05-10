@@ -1,8 +1,7 @@
 {
   "profiles": {
     "FolderSyncing": {
-      "commandName": "Project",
-      "commandLineArgs": "start -i 10 -s C:\\temp\\source\\ -d C:\\temp\\destination\\ -l C:\\temp\\logs\\logs.txt"
+      "commandName": "Project"
     }
   }
 }
