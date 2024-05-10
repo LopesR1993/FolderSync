@@ -6,7 +6,7 @@ namespace FolderSyncing.Validation
 {
     public static class ValidationHelper
     {
-        public static void ValidateInputs(string intervalSeconds, string sourceFolder, string destinationFolder, string logFileLocation)
+        public static void ValidateInputs(string intervalSeconds, string sourceFolder, string destinationFolder)
         {
             ValidateTimeInput(intervalSeconds);
             ValidateSourceFolderInput(sourceFolder);
