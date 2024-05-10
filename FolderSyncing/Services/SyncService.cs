@@ -99,7 +99,13 @@
             var fileName = Path.GetFileName(sourceFilePath);
             var destinationFilePath = Path.Combine(destinationFolder, fileName);
 
-            File.Copy(sourceFilePath, destinationFilePath, true);
+            using (FileStream sourceStream = File.Open(sourceFilePath, FileMode.Open))
+            {
+                using (FileStream destinationStream = File.Create(destinationFilePath))
+                {
+                    await sourceStream.CopyToAsync(destinationStream);
+                }
+            }
 
             if (isUpdate)
             {
