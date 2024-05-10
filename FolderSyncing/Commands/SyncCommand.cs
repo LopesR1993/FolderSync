@@ -20,12 +20,11 @@ namespace FolderSyncing.Commands
         public async Task SyncFoldersAsync(
             [Option('i', Description = "The interval between synchronization in seconds")] string intervalSeconds,
             [Option('s', Description = "The path to the folder to be synchronized")] string sourceFolder,
-            [Option('d', Description = "The path to the replica folder")] string destinationFolder,
-            [Option('l', Description = "The path to the log file.")] string logFileLocation)
+            [Option('d', Description = "The path to the replica folder")] string destinationFolder)
         {
             try
             {
-                ValidationHelper.ValidateInputs(intervalSeconds, sourceFolder, destinationFolder, logFileLocation);
+                ValidationHelper.ValidateInputs(intervalSeconds, sourceFolder, destinationFolder);
                 _logger.Information($"Started synchronizing folders and files.\n Source: {sourceFolder}\n Destination: {destinationFolder}");
 
                 var interval = int.Parse(intervalSeconds) * 1000;

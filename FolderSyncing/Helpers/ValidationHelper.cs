@@ -11,7 +11,6 @@ namespace FolderSyncing.Validation
             ValidateTimeInput(intervalSeconds);
             ValidateSourceFolderInput(sourceFolder);
             ValidateDestinationFolderInput(destinationFolder);
-            ValidateLogFileLocationInput(logFileLocation);
         }
 
         private static void ValidateTimeInput(string timeInput)
@@ -22,14 +21,13 @@ namespace FolderSyncing.Validation
                 throw new InvalidTimeException();
             }
         }
-        private static void ValidateLogFileLocationInput(string logFileLocation)
-        {
-            
-        }
 
         private static void ValidateDestinationFolderInput(string destinationFolder)
         {
-            
+            if (!Directory.Exists(destinationFolder))
+            {
+                throw new DirectoryNotFoundException();
+            }
         }
 
 
@@ -37,7 +35,7 @@ namespace FolderSyncing.Validation
         {
             if (!Directory.Exists(sourceFolderInput)) 
             {
-                throw new InexistentSourceFolderException(sourceFolderInput);
+                throw new DirectoryNotFoundException();
             }
         }
     }
